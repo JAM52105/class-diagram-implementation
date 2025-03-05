@@ -130,6 +130,20 @@ void displayProducts(vector<Product> &products) {
     }
 }
 
+int getValidInput() {
+    int input;
+    while (true) {
+        cin >> input;
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(10000, '\n');
+            cout << "Invalid input! Please enter a number: ";
+        } else {
+            return input;
+        }
+    }
+}
+
 int main() {
     vector<Product> products = {
         {1, "Laptop", 999.99, 10},
@@ -148,27 +162,20 @@ int main() {
         cout << "3. View Orders" << endl;
         cout << "4. Exit" << endl;
         cout << "Enter your choice: ";
-        cin >> choice;
+        choice = getValidInput();
 
         if (choice == 1) {
             displayProducts(products);
             while (true) {
-                int productID, quantity;
                 cout << "Enter the ID of the product you want to add to the shopping cart (0 to go back): ";
-                cin >> productID;
+                int productID = getValidInput();
                 if (productID == 0) break;
                 
                 bool found = false;
                 for (auto &product : products) {
                     if (product.productID == productID) {
                         cout << "Enter quantity: ";
-                        cin >> quantity;
-                        if (cin.fail()) { // Validate non-numeric input
-                            cin.clear();
-                            cin.ignore(10000, '\n');
-                            cout << "Invalid input! Please enter a valid quantity." << endl;
-                            continue;
-                        }
+                        int quantity = getValidInput();
                         cart.addProduct(&product, quantity);
                         found = true;
                         break;
@@ -176,7 +183,6 @@ int main() {
                 }
                 if (!found) cout << "Invalid Product ID!" << endl;
             }
-
         } else if (choice == 2) {
             cart.viewCart();
             if (!cart.cart.empty()) {
@@ -190,15 +196,13 @@ int main() {
                     cart.clearCart();
                 }
             }
-
         } else if (choice == 3) {
             orderHistory.viewOrders();
-
         } else if (choice == 4) {
             cout << "Exiting program. Thank you!" << endl;
             break;
         } else {
-            cout << "Invalid choice! Please enter a valid option." << endl;
+            cout << "Invalid choice!" << endl;
         }
     }
     return 0;
